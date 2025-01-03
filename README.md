@@ -15,5 +15,18 @@ com essa: "Started ApiEstudarApplication in 4.894 seconds (JVM running for 5.447
 
 Este projeto é o front-end em Angular que contém as funcionalidades do sistema para o usuário utilizar. Este projeto consome a API presente em ApiProdutos.
 Este projeto foi desenvolvido com o "WebStorm", por isso é recomendado que seja rodado com ele. Mas nada impede que seja utilizado "VS Code" ou "IntelliJ".
-Baixe o "WebStorm", de preferência "WebStorm 2024.3.1.1". Importe o projeto e rode com "ng serve". Depois acesse o sistema pela URL: http://localhost:4200/
+Como o projeto é um sistema desenvolvido em Agular, é necessário ter o Node.js instalado em sua máquina. Então baixe o Node.js 16 no site oficial e instale.
+
+
+Talvez a variável de sistema do Node não esteja setada no PATH (para ambientes Windows) após a instalação, então cheque. Caso não esteja, você
+deve setar. O caminho para colocar no PATH normalmente é: c:\Program Files\nodejs. Após isso é necessário reiniciar o computador. 
+
+
+Depois, abra o prompt de comando (cmd) e rode o seguinte comando: npm install -g @angular/cli
+
+Isso irá instalar o Angular CLI no seu computador. O Angular CLI é necessário para rodar o framework do Angular na sua máqiuna.
+Para ver se o Angular CLI foi instalado com sucesso, rode esse comando: ng version
+
+Depois, baixe o "WebStorm", de preferência "WebStorm 2024.3.1.1". Importe o projeto e rode o projeto com o comando "ng serve" no terminal do WebStorm. 
+Depois acesse o sistema pela URL: http://localhost:4200/
 Lembrando que para o sistema funcionar, a API ApiProdutos deve estar rodando e funcionando perfeitamente (para ter certeza, utilize o Postman.)
