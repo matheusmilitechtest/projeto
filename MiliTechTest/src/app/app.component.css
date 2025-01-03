@@ -1,0 +1,30 @@
+img {
+  transform: translateX(40px) translateY(5px);
+}
+
+h2 {
+  font-size: 30px;
+  font-family: "Arial Black";
+}
+
+h1 {
+  font-size: 20px;
+  font-family: "Arial Black";
+}
+
+p {
+  font-size: 12px;
+}
+
+#div_banner_gradient {
+  height: 70px; /* Ajuste essa altura conforme necessário */
+  width: 1300px;
+  position: relative; /* Isso ajuda a manter o posicionamento dos filhos */
+  background: linear-gradient(to bottom, #FF6347, #FF4500); /* Exemplo de gradiente */
+  padding-top: 10px; /* Ajusta a distância entre a parte superior e o conteúdo dentro da div */
+}
+
+#div_gradient h2 {
+  margin-top: 10px; /* Ajuste a margem superior para dar espaçamento entre o topo da div e o título */
+  margin-bottom: 7px;
+}
