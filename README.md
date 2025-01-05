@@ -22,7 +22,7 @@
 3. Como o projeto é um sistema desenvolvido em Angular, é necessário ter o Node.js instalado em sua máquina. Então baixe o Node.js v22.12.0 no site oficial e instale.
 4. É necessário setar a variável de ambiente do Node no PATH do sistema após a instalação (para ambientes Windows). O caminho para colocar no PATH normalmente é: C:\Program Files\nodejs. Após isso é necessário reiniciar o computador. 
 5. Depois, abra o prompt de comando (cmd) e rode o seguinte comando: npm install -g @angular/cli
-6. Isso irá instalar a última versão do Angular, o Angular CLI 18, no seu computador. O Angular CLI é necessário para rodar o framework do Angular na sua máquina. Para ver se o Angular CLI foi instalado com sucesso, rode esse comando: ng version
+6. Isso irá instalar a última versão do Angular, o Angular CLI 19, no seu computador. O Angular CLI é necessário para rodar o framework do Angular na sua máquina. Para ver se o Angular CLI foi instalado com sucesso, rode esse comando: ng version
 7. Depois, baixe o "WebStorm", de preferência "WebStorm 2024.3.1.1". Importe o projeto e rode o projeto com o comando "ng serve" no terminal do WebStorm. 
 8. Acesse o sistema pela URL: http://localhost:4200/
 
