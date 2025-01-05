@@ -29,11 +29,10 @@ public class ProdutoServiceImpl implements ProdutoService {
 	public Optional<Produto> buscarProduto(long id) {
 		// Pega o produto pelo id
 		Optional<Produto> produto = produtoRepository.findById(id);
-		// Se o produto não existir, ou seja, se ele estiver vazio (empty), retorna nulo
-		if (produto.isEmpty() == true)
+		// Se o produto não existir, retorna nulo
+		if (produto.isPresent() == false)
 			return null;
-		// Se o produto existir, ou seja, se não estiver vazio (!empty), retorna o
-		// produto
+		// Se o produto existir,retorna o produto
 		else
 			return produto;
 	}
