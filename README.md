@@ -5,7 +5,7 @@
 
 
 
-## -1 - *ApiProdutos**
+## - 1 - *ApiProdutos**
 
 1. Contém uma REST API feita em Spring Boot e Java 8, utilizando "Eclipse IDE for Java Developers - 2024-09". O banco de dados utilizado é o PostgreSQL com pgAdmin 4. As configurações de dependências estão no arquivo "pom.xml" e as de conexão com o banco de dados no arquivo "application.properties". 
 2. Instale o PostgreSQL e o pgAdmin 4 e configure de acordo com o "application.properties". As configurações são: localhost:5432, username-postgres, password=admin, database=testemili. Se necessário, crie um role no pgAdmin com todas as permissões e atribua para a database em questão. 
@@ -15,7 +15,7 @@
 
 
 
-## -2 - *MiliTechTest**
+## - 2 - *MiliTechTest**
 
 1. Este projeto é o front-end em Angular que contém as funcionalidades do sistema para o usuário utilizar. Este projeto consome a API presente em ApiProdutos.
 2. Este projeto foi desenvolvido com o "WebStorm", por isso é recomendado que seja rodado com ele. Mas nada impede que seja utilizado "VS Code" ou "IntelliJ".
