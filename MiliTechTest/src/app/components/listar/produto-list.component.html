@@ -6,19 +6,21 @@
         <th colspan="9" class="text-center">Produtos</th>
       </tr>
       <tr>
+        <th class="text-center"><strong>ID</strong></th>
         <th class="text-left"><strong>Nome</strong></th>
         <th class="text-left"><strong>Tipo</strong></th>
         <th class="text-center"><strong>Valor unitário</strong></th>
         <th class="text-center"><strong>Frete</strong></th>
         <th class="text-center"><strong>Promoção</strong></th>
-        <th class="text-center"><strong>Valor com desconto</strong></th>
-        <th class="text-center"><strong>Valor com frete</strong></th>
+        <th class="text-center"><strong>Vl un desc</strong></th>
+        <th class="text-center"><strong>Valor total</strong></th>
         <th class="text-center"><strong></strong></th>
         <th class="text-center"><strong></strong></th>
       </tr>
       </thead>
       <tbody>
       <tr *ngFor="let produto of listaDeProdutos">
+        <td class="text-center">{{ produto.id }}</td>
         <td class="text-left">{{ produto.nome }}</td>
         <td class="text-left">
           {{ produto.tipo === 'tipoFisico' ? 'Físico' : 'Digital' }}
@@ -33,9 +35,16 @@
             width="25"
             height="25">
         </td>
-
-        <td class="text-center">{{ formatarValor(produto.valorTotalDesc) }}</td>
-        <td class="text-center">{{ formatarValor(produto.valorTotalFrete) }}</td>
+        <td class="text-center">
+          {{ formatarValor(produto.valorTotalDesc) }}
+        </td>
+        <td class="text-center">
+          <ng-container *ngIf="produto.tipo === 'tipoFisico'; else vazio">
+            {{ formatarValor(produto.valorTotalFrete) }}
+          </ng-container>
+          <ng-template #vazio>
+          </ng-template>
+        </td>
         <td class="text-center">
           <button type="button" class="btn btn-info full-width-btn" id="btn_editar" (click)="atualizarProduto(janelaEditar, produto.id, produto)">Editar</button>
         </td>
@@ -44,7 +53,17 @@
         </td>
       </tr>
       <tr>
-        <td colspan="9" class="text-left">
+        <td colspan="11" class="text-left">
+          <strong><label style="font-size: 14px;">* Vl un desc: este é o valor unitário do produto com desconto de 10%, caso esteja em promoção.</label></strong>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="11" class="text-left">
+          <strong><label style="font-size: 14px;">* Valor total: este é o valor total do produto, com frete e com desconto, caso tenha frete e caso esteja em promoção.</label></strong>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="11" class="text-left">
           <a class="btn bg-primary-subtle fw-bold" (click)="atualizarLista()" role="button">Atualizar lista</a>
         </td>
       </tr>
