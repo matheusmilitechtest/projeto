@@ -44,7 +44,8 @@
                     class="form-control"
                     id="tipo"
                     name="tipoProduto"
-                    required #tipo="ngModel">
+                    required #tipo="ngModel"
+                    (ngModelChange)="mudarLabelMedidaPeso()">
               <option value="tipoFisico">Físico</option>
               <option value="tipoDigital">Digital</option>
             </select>
@@ -63,41 +64,34 @@
           </td>
         </tr>
         <tr>
-          <td rowspan="2"><label for="freteTrue">Frete:</label></td>
+          <td rowspan="2"><label>Valor do frete:</label></td>
           <td rowspan="2" colspan="1">
-          <!-- ########## HABILITA / DESABILITA O CAMPO CASO O FRETE SEJA SETADO OU NÃO ########## -->
-            <ng-container *ngIf="produto.freteAtivo; else freteFalse">
-              <!-- Frete do Produto -->
-                <input type="number" [(ngModel)]="produto.frete"
-                       class="form-control"
-                       id="freteTrue"
-                       name="freteProduto"
-                       required #frete="ngModel"
-                       maxlength="30"
-                       [disabled]="false">
-            </ng-container>
-            <ng-template #freteFalse>
-                <input type="number" [(ngModel)]="produto.frete"
-                       class="form-control"
-                       id="freteFalse"
-                       name="freteProduto"
-                       required #frete="ngModel"
-                       maxlength="30"
-                       [disabled]="true">
-            </ng-template>
+            <!-- Div para exibir o valor formatado -->
+            <div class="mt-1">{{produto.frete | currency : 'BRL'}}</div>
+            <!-- INPUT EXISTE PARA O CAMPO DA ENTIDADE FAZER PARTE DO NGMODEL, MAS TEM DISPLAY = NONE -->
+            <input type="number" [(ngModel)]="produto.frete"
+                   class="form-control"
+                   id="freteTrue"
+                   name="freteProduto"
+                   required #frete="ngModel"
+                   maxlength="30"
+                   [disabled]="!produto.freteAtivo"
+                   style="display: none;">
           </td>
         </tr>
         <tr>
           <!-- Peso -->
           <td><label for="peso">Peso:</label></td>
-          <td colspan="1">
+          <td>
             <input type="number" [(ngModel)]="produto.peso"
                    class="form-control"
                    id="peso"
                    name="pesoProduto"
                    required #peso="ngModel"
-                   maxlength="30"
-                   (ngModelChange)="calcularFrete($event)">
+                   maxlength="30">
+          </td>
+          <td style="width: 40px;">
+            <label>{{ medidaPeso }}</label>
           </td>
         </tr>
         <tr>
@@ -112,8 +106,8 @@
                    maxlength="30">
           </td>
           <!-- Valor Total com Desconto -->
-          <td><label for="valorTotalDesc">Valor total com desconto:</label></td>
-            <!-- INPUT EXISTE PARA A PROPRIEDADE DA ENTIDADE FAZER PARTE DO NGMODEL, MAS TEM DISPLAY = NONE -->
+          <td><label for="valorTotalDesc">Valor produto c/ desconto:</label></td>
+            <!-- INPUT EXISTE PARA O CAMPO DA ENTIDADE FAZER PARTE DO NGMODEL, MAS TEM DISPLAY = NONE -->
             <input type="number" [(ngModel)]="produto.valorTotalDesc"
                    class="form-control"
                    id="valorTotalDesc"
@@ -137,7 +131,7 @@
           <td>
             <label for="valorTotalFrete">Valor total com frete:</label>
           </td>
-          <!-- INPUT EXISTE PARA A PROPRIEDADE DA ENTIDADE FAZER PARTE DO NGMODEL, MAS TEM DISPLAY = NONE -->
+          <!-- INPUT EXISTE PARA O CAMPO DA ENTIDADE FAZER PARTE DO NGMODEL, MAS TEM DISPLAY = NONE -->
           <input type="number" [(ngModel)]="produto.valorTotalFrete"
                  class="form-control"
                  id="valorTotalFrete"
@@ -170,7 +164,8 @@
                     id="freteAtivo"
                     name="freteAtivoProduto"
                     required #freteAtivo="ngModel"
-                    (ngModelChange)="ativarFrete($event)">
+                    (ngModelChange)="ativarFrete($event)"
+                    [disabled]="habilitarCampoFrete()">
               <option [ngValue]="true">Sim</option>
               <option [ngValue]="false">Não</option>
             </select>

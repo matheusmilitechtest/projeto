@@ -15,8 +15,7 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
     NgIf,
     CurrencyPipe,
     FormsModule,
-    ReactiveFormsModule,
-    NgStyle
+    ReactiveFormsModule
   ],
   styleUrls: ['./produto-list.component.css']
 })
@@ -25,20 +24,24 @@ export class ProdutoListComponent implements OnInit {
 
   listaDeProdutos: Produto[] = [];
   produtoAtualizar!: Produto;
-  private modalService: NgbModal = new NgbModal();
   produtoExcluido!: Produto;
+  private modalService: NgbModal = new NgbModal();
 
   constructor(private produtoService: ProdutoService) { }
 
   // Ao abrir a página, chama o endpoint para preencher a lista de produtos
   ngOnInit() {
     this.produtoService.listarProdutos().subscribe(data => {
+      // Ordena os produtos por ID, em ordem crescente
       this.listaDeProdutos = data.sort((a, b) => a.id - b.id);
     });
   }
 
-  onSubmit() {
-    console.log("CLICOU NO ONSUBMIT")
+  onSubmit(modal: any) {
+    // Chama o service de atualizar o produto no banco de dados
+    this.produtoService.atualizarProduto(this.produtoAtualizar.id, this.produtoAtualizar).subscribe();
+    modal.close();
+    this.atualizarLista();
   }
 
   // Método para deletar um produto através do id
@@ -57,7 +60,7 @@ export class ProdutoListComponent implements OnInit {
   atualizarProduto(modalEditar: any, id: number, produto: Produto) {
     this.produtoService.atualizarProduto(id, produto).subscribe({
       next: (produtoRetornado: Produto) => {
-        // Atribui o Produto retornado pelo id fornecido(produtoRetornado)
+        // Atribui o Produto retornado (produtoRetornado) pelo id fornecido
         // ao produto que será atualizado e abre a tela de edição
         this.produtoAtualizar = produtoRetornado
         this.abrirTelaEdicao(modalEditar)
@@ -82,25 +85,23 @@ export class ProdutoListComponent implements OnInit {
 
   // Função que abre o modal - Janela de edição de produto
   abrirTelaEdicao(modalEditar: any) {
-    const modalRef = this.modalService.open(modalEditar);
+    this.modalService.open(modalEditar);
   }
 
   // Função que abre o modal - Janela de exclusão de produto
   abrirTelaExclusao(modalExcluir: any) {
-    const modalRef = this.modalService.open(modalExcluir);
+    this.modalService.open(modalExcluir);
     this.atualizarLista();
   }
 
-  // Método que abre o modal de mensagem de sucesso após cadastrar um produto
-  msgAtualizarProduto(modalMsg: any) {
-    console.log("CLICOU NO 'MSG ATUALIZAR PRODUTO'")
-    //const modalRef = this.modalService.open(modalMsg);
-    // Espera 0.3 segundos para setar o produto no modal por que ele chama no HTML o submit e click ao mesmo tempo
-    // E se chamar os dois eventos ao mesmo tempo, o submit não consegue gravar no banco de dados
-    // E depois que seta o produto no modal, ele chama e abre o modal
-    //setTimeout(() => {
-    //  modalRef.componentInstance.produto = this.novoProduto;
-    //}, 300);
+  ativarFrete(ativouFrete: boolean): boolean {
+    if (ativouFrete) {
+      console.log("TROCOU PARA SIM");
+      return true;
+    } else {
+      console.log("TROCOU PARA NÃO");
+      return false;
+    }
   }
 
 }

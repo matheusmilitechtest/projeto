@@ -7,6 +7,7 @@
       </tr>
       <tr>
         <th class="text-left"><strong>Nome</strong></th>
+        <th class="text-left"><strong>Tipo</strong></th>
         <th class="text-center"><strong>Valor unitário</strong></th>
         <th class="text-center"><strong>Frete</strong></th>
         <th class="text-center"><strong>Promoção</strong></th>
@@ -19,16 +20,18 @@
       <tbody>
       <tr *ngFor="let produto of listaDeProdutos">
         <td class="text-left">{{ produto.nome }}</td>
+        <td class="text-left">
+          {{ produto.tipo === 'tipoFisico' ? 'Físico' : 'Digital' }}
+        </td>
         <td class="text-center">{{ formatarValor(produto.valor) }}</td>
         <td class="text-center">{{ formatarValor(produto.frete) }}</td>
 
         <td class="text-center">
-          <ng-container *ngIf="produto.promocao; else promocaoFalse">
-            <img src="/bolinha_verde.png" alt="True" width="25" height="25">
-          </ng-container>
-          <ng-template #promocaoFalse>
-            <img src="/bolinha_vermelha.png" alt="False" width="25" height="25">
-          </ng-template>
+          <img
+            [src]="produto.promocao ? '/bolinha_verde.png' : '/bolinha_vermelha.png'"
+            [alt]="produto.promocao ? 'Promoção Ativa' : 'Promoção Inativa'"
+            width="25"
+            height="25">
         </td>
 
         <td class="text-center">{{ formatarValor(produto.valorTotalDesc) }}</td>
@@ -66,7 +69,7 @@
     <!--######## INICIO DO FORMULÁRIO DE EDIÇÃO DE PRODUTO ######## -->
 
     <div class="card-body">
-      <form (ngSubmit)="onSubmit()" #produtoForm="ngForm" >
+      <form (ngSubmit)="onSubmit(modal)" #produtoForm="ngForm" >
         <table class="table table-bordered">
           <tbody>
           <!-- LINHA 1: Nome do Produto -->
@@ -128,14 +131,15 @@
 
           <!-- LINHA 5: Frete do Produto -->
           <tr>
-            <td rowspan="2"><label for="frete">Frete:</label></td>
+            <td rowspan="2"><label>Frete:</label></td>
             <td rowspan="2" colspan="1">
               <input type="number" [(ngModel)]="produtoAtualizar.frete"
                      class="form-control"
-                     id="frete"
+                     id="freteTrue"
                      name="freteProduto"
                      required #frete="ngModel"
-                     maxlength="30">
+                     maxlength="30"
+                     [disabled]="!produtoAtualizar.freteAtivo">
             </td>
           </tr>
 
@@ -200,7 +204,7 @@
           <!-- LINHA 11: Promoção -->
           <tr>
             <td><label for="promocao">Promoção:</label></td>
-            <td colspan="3">
+            <td>
               <select [(ngModel)]="produtoAtualizar.promocao"
                       class="form-control"
                       id="promocao"
@@ -208,6 +212,18 @@
                       required #promocao="ngModel">
                 <option value="true">Sim</option>
                 <option value="false">Não</option>
+              </select>
+            </td>
+            <td><label for="freteAtivo">Frete ativo:</label></td>
+            <td>
+              <select [(ngModel)]="produtoAtualizar.freteAtivo"
+                      class="form-control"
+                      id="freteAtivo"
+                      name="freteAtivoProduto"
+                      required #freteAtivo="ngModel"
+                      (ngModelChange)="ativarFrete($event)">
+                <option [ngValue]="true">Sim</option>
+                <option [ngValue]="false">Não</option>
               </select>
             </td>
           </tr>
@@ -232,7 +248,7 @@
           <!-- LINHA 13: Botão de Cadastrar -->
           <tr>
             <td colspan="6" class="text-left">
-              <button type="submit" [disabled]="!produtoForm.form.valid" class="btn bg-primary-subtle fw-bold" (click)="msgAtualizarProduto(modalMsg)">Salvar</button>
+              <button type="submit" [disabled]="!produtoForm.form.valid" class="btn bg-primary-subtle fw-bold">Salvar</button>
             </td>
           </tr>
           </tbody>
