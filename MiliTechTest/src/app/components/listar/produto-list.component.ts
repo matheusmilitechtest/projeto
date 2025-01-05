@@ -22,29 +22,60 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 
 export class ProdutoListComponent implements OnInit {
 
+  // Lista que contém o produto com Valor Total mais caro
+  listaProdutoMaisCaro: Produto[] = [];
+  // Variável que extrai o nome do produto e o id do produto com o Valor Total mais caro
+  stringProdutoMaisCaro: string = '';
+  // Variável pra exibir o resultado da query que vem da API sobre média de preços
+  mediaPreco: number = 0;
+
+  // Variáveis para: armazenar a lista de produtos para listagem na tela, armazenar o produto a ser atualizado
+  // no modal de edição e o produto a ser exclúido para abrir o modal de mensagem
   listaDeProdutos: Produto[] = [];
   produtoAtualizar!: Produto;
   produtoExcluido!: Produto;
+
   private modalService: NgbModal = new NgbModal();
 
   constructor(private produtoService: ProdutoService) { }
 
-  // Ao abrir a página, chama o endpoint para preencher a lista de produtos
+  // Ao abrir a página, chama os endpoints abaixo...
   ngOnInit() {
+    // Chama o método de listar o produto mais caro
+    this.listarProdutoMaisCaro();
+    // Chama o método de calcular a média dos valores unitários
+    this.calcularMedia();
+    // Lista todos os produtos na tela
     this.produtoService.listarProdutos().subscribe(data => {
-      // Ordena os produtos por ID, em ordem crescente
+      // Lista e ordena os produtos por ID, em ordem crescente (de 'a' para 'b', de '0' a '10', por exemplo)
       this.listaDeProdutos = data.sort((a, b) => a.id - b.id);
     });
   }
 
-  onSubmit(modal: any) {
-    // Chama o service de atualizar o produto no banco de dados
+  // Método chamado ao clicar no botão de Submit (Salvar) do formulário de Edição de produtos
+  onSubmitSalvar(modal: any) {
+    // Chama o modal de atualizar produto
     this.produtoService.atualizarProduto(this.produtoAtualizar.id, this.produtoAtualizar).subscribe();
     modal.close();
     this.atualizarLista();
   }
 
-  // Método para deletar um produto através do id
+  // Método que calcula a média dos valores unitários
+  calcularMedia() {
+    this.produtoService.calcularMedia().subscribe((media: number) => {
+      this.mediaPreco = media; // Atribui o valor da média à variável mediaPreco
+    });
+  }
+
+  // Metodo que busca o produto com Valor Total mais caro
+  listarProdutoMaisCaro() {
+  this.produtoService.listarProdutoMaisCaro().subscribe((produtos: Produto[]) => {
+    this.listaProdutoMaisCaro = produtos;
+    this.stringProdutoMaisCaro = '' + this.listaProdutoMaisCaro[0].id + ' - ' +  this.listaProdutoMaisCaro[0].nome
+  })}
+
+  // Método para deletar um produto através do id. Chama o endpoint, e tendo sucesso na exclusão
+  // (retornando true do endpoint, abre o o modal de mensagem de produto excluido com sucesso)
   deletarProduto(modalDeletar: any, id: number, produto: Produto) {
     this.produtoService.deletarProduto(id).subscribe({
       next: (response) => {
@@ -78,8 +109,12 @@ export class ProdutoListComponent implements OnInit {
 
   // Método que atualiza a lista de produtos
   atualizarLista(): void {
+    // Lista todos os produtos na tela
     this.produtoService.listarProdutos().subscribe(data => {
-      this.listaDeProdutos = data;
+      // Lista e ordena os produtos por ID, em ordem crescente (de 'a' para 'b', de '0' a '10', por exemplo)
+      this.listaDeProdutos = data.sort((a, b) => a.id - b.id);
+      this.listarProdutoMaisCaro();
+      this.calcularMedia();
     });
   }
 
@@ -92,6 +127,8 @@ export class ProdutoListComponent implements OnInit {
   abrirTelaExclusao(modalExcluir: any) {
     this.modalService.open(modalExcluir);
     this.atualizarLista();
+    this.listarProdutoMaisCaro();
+    this.calcularMedia();
   }
 
   ativarFrete(ativouFrete: boolean): boolean {

@@ -3,7 +3,7 @@
     <table class="table table-bordered table-striped">
       <thead class="thead-dark">
       <tr>
-        <th colspan="9" class="text-center">Produtos</th>
+        <th colspan="11" class="text-center">Produtos</th>
       </tr>
       <tr>
         <th class="text-center"><strong>ID</strong></th>
@@ -52,18 +52,18 @@
           <button type="button" class="btn btn-danger full-width-btn" id="btn_excluir" (click)="deletarProduto(modalMsg, produto.id, produto)">Excluir</button>
         </td>
       </tr>
+
+      <!-- Label que exibe a variável do produto mais caro -->
       <tr>
         <td colspan="11" class="text-left">
-          <strong><label style="font-size: 14px;">* Vl un desc: este é o valor unitário do produto com desconto de 10%, caso esteja em promoção.</label></strong>
+          <b><label style="font-size: 16px;">* <u>Produto mais caro</u> - <label style="color: green; font-size: 20px">ID: {{ stringProdutoMaisCaro }}</label></label></b> |
+          <b><label style="font-size: 14px;">* Somando o valor unitário de todos os produtos cadastrados, sem frete e sem desconto, a <u>média de preço</u> é: <label style="color: green; font-size: 20px">{{ formatarValor(mediaPreco) }}</label></label></b>
         </td>
       </tr>
       <tr>
-        <td colspan="11" class="text-left">
-          <strong><label style="font-size: 14px;">* Valor total: este é o valor total do produto, com frete e com desconto, caso tenha frete e caso esteja em promoção.</label></strong>
-        </td>
-      </tr>
-      <tr>
-        <td colspan="11" class="text-left">
+        <td colspan="10" class="text-left">
+          <label style="font-size: 12px;">* <b><u>Vl un desc</u>:</b> este é o valor unitário do produto com desconto de 10%, caso esteja em promoção. </label><label style="font-size: 12px;"> <b> | <u> Valor total</u>:</b> este é o valor total do produto, com frete e com desconto, caso tenha frete e caso esteja em promoção.</label>
+          <br><br>
           <a class="btn bg-primary-subtle fw-bold" (click)="atualizarLista()" role="button">Atualizar lista</a>
         </td>
       </tr>
@@ -88,7 +88,7 @@
     <!--######## INICIO DO FORMULÁRIO DE EDIÇÃO DE PRODUTO ######## -->
 
     <div class="card-body">
-      <form (ngSubmit)="onSubmit(modal)" #produtoForm="ngForm" >
+      <form (ngSubmit)="onSubmitSalvar(modal)" #produtoForm="ngForm" >
         <table class="table table-bordered">
           <tbody>
           <!-- LINHA 1: Nome do Produto -->

@@ -16,5 +16,8 @@ public interface ProdutoService {
 	Produto atualizarProduto(long id, Produto produtoAtualizado);
 
 	boolean deletarProduto(long id);
+	
+	List<Produto> listarProdutoMaisCaro();
 
+	double obterMediaPreco();
 }

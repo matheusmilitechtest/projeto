@@ -77,4 +77,14 @@ public class ProdutoServiceImpl implements ProdutoService {
 			return false;
 	}
 
+	@Override
+	public List<Produto> listarProdutoMaisCaro() {
+		return produtoRepository.listarProdutoMaisCaro();
+	}
+	
+	@Override
+	public double obterMediaPreco() {
+		return produtoRepository.obterMediaPreco();
+	}
+
 }

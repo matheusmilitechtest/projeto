@@ -55,11 +55,24 @@ public class ProdutoController {
 	}
 
 	@DeleteMapping("/deletarProduto/{id}")
-	public Boolean deletarProduto(@PathVariable int id) {
+	public boolean deletarProduto(@PathVariable int id) {
 		boolean estaDeletado = produtoService.deletarProduto(id);
 		// Se encontrar o produto pelo id, deleta e retorna TRUE mas se
 		// não encontrar retorna FALSE
 		return estaDeletado;
+	}
+	
+	
+	@GetMapping("/produtoMaisCaro")
+	public List<Produto> listarProdutoMaisCaro() {
+		List<Produto> produtoMaisCaro = produtoService.listarProdutoMaisCaro();
+		return produtoMaisCaro;
+	}
+	
+	@GetMapping("/mediaPreco")
+	public double obterMediaPreco() {
+		double media = produtoService.obterMediaPreco();
+		return media;
 	}
 
 }
