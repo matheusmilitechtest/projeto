@@ -216,6 +216,7 @@ export class ProdutoListComponent implements OnInit {
       valorFrete = this.calcularFrete()
       this.produtoAtualizar.valorTotalDesc = this.produtoAtualizar.valor - (this.produtoAtualizar.valor * 0.1)
       this.produtoAtualizar.valorTotalFrete = this.produtoAtualizar.valorTotalDesc + valorFrete
+      this.produtoAtualizar.frete = valorFrete;
 
       this.produtoAtualizar.somaTotalValores = this.produtoAtualizar.valorTotalDesc + this.produtoAtualizar.frete
     }
@@ -234,6 +235,7 @@ export class ProdutoListComponent implements OnInit {
       valorFrete = this.calcularFrete()
       this.produtoAtualizar.valorTotalFrete = this.produtoAtualizar.valor + valorFrete
       this.produtoAtualizar.valorTotalDesc = 0
+      this.produtoAtualizar.frete = valorFrete;
 
       this.produtoAtualizar.somaTotalValores = this.produtoAtualizar.valorTotalFrete
     }

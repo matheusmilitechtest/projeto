@@ -80,7 +80,7 @@ export class AddProdutoComponent {
     }
   }
 
-  // Função chamada quando troca o valor da ComboBox Frete Ativo para saber se o Produto tem frete ou não
+  // Função chamada quando troca o valor da ComboBox Frete para saber se o Produto tem frete ou não
   ativarFrete(ativouFrete: boolean): boolean {
     if (ativouFrete) {
       return true;
@@ -133,6 +133,7 @@ export class AddProdutoComponent {
       valorFrete = this.calcularFrete()
       this.produto.valorTotalDesc = this.produto.valor - (this.produto.valor * 0.1)
       this.produto.valorTotalFrete = this.produto.valorTotalDesc + valorFrete
+      this.produto.frete = valorFrete;
 
       this.produto.somaTotalValores = this.produto.valorTotalDesc + this.produto.frete
     }
@@ -151,6 +152,7 @@ export class AddProdutoComponent {
       valorFrete = this.calcularFrete()
       this.produto.valorTotalFrete = this.produto.valor + valorFrete
       this.produto.valorTotalDesc = 0
+      this.produto.frete = valorFrete;
 
       this.produto.somaTotalValores = this.produto.valorTotalFrete
     }
