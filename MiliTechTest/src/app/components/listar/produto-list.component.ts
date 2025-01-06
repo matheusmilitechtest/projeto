@@ -22,8 +22,9 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 
 export class ProdutoListComponent implements OnInit {
 
-  // Lista que contém o produto com Valor Total mais caro
+  // Esta variável abaixo é a lista que contém o produto com Valor Total mais caro
   listaProdutoMaisCaro: Produto[] = [];
+
   // Variável que extrai o nome do produto e o id do produto com o Valor Total mais caro
   stringProdutoMaisCaro: string = '';
   // Variável pra exibir o resultado da query que vem da API sobre média de preços
@@ -31,9 +32,12 @@ export class ProdutoListComponent implements OnInit {
 
   // Variáveis para: armazenar a lista de produtos para listagem na tela, armazenar o produto a ser atualizado
   // no modal de edição e o produto a ser exclúido para abrir o modal de mensagem
-  listaDeProdutos: Produto[] = [];
+  listaDeProdutos!: Produto[];
   produtoAtualizar!: Produto;
   produtoExcluido!: Produto;
+
+  // Variável somente para visualização. Exibe KG na tela para produto tipoFisico e MB para tipoDigital
+  medidaPeso: string = 'KG';
 
   private modalService: NgbModal = new NgbModal();
 
@@ -54,7 +58,9 @@ export class ProdutoListComponent implements OnInit {
 
   // Método chamado ao clicar no botão de Submit (Salvar) do formulário de Edição de produtos
   onSubmitSalvar(modal: any) {
-    // Chama o modal de atualizar produto
+    // Chama o método de calcular os totalizadores de valor antes de salvar o produto no banco de dados
+    this.calcularValores();
+    // Salva o produto no banco de dados, fecha o modal e atualiza a lista
     this.produtoService.atualizarProduto(this.produtoAtualizar.id, this.produtoAtualizar).subscribe();
     modal.close();
     this.atualizarLista();
@@ -66,6 +72,10 @@ export class ProdutoListComponent implements OnInit {
       this.mediaPreco = media; // Atribui o valor da média à variável mediaPreco
     });
   }
+
+  // * ATENÇÃO: O ENDPOINT de produto mais caro retorna uma lista porque pode haver produtos com
+  // "Valores Totais" iguais. E também, retornar uma lista pode permitir ser implementado
+  // um ranking de valores mais caros, e não a exibição de somente o primeiro valor.
 
   // Metodo que busca o produto com Valor Total mais caro
   listarProdutoMaisCaro() {
@@ -94,6 +104,8 @@ export class ProdutoListComponent implements OnInit {
         // Atribui o Produto retornado (produtoRetornado) pelo id fornecido
         // ao produto que será atualizado e abre a tela de edição
         this.produtoAtualizar = produtoRetornado
+        this.calcularValores();
+        this.mudarLabelMedidaPeso();
         this.abrirTelaEdicao(modalEditar)
       }
     })
@@ -131,14 +143,96 @@ export class ProdutoListComponent implements OnInit {
     this.calcularMedia();
   }
 
-  ativarFrete(ativouFrete: boolean): boolean {
-    if (ativouFrete) {
-      console.log("TROCOU PARA SIM");
+  // Método chamado ao mudar de valor na ComboBox de Promoção no ngModel
+  selecionarPromocao(selecionouPromocao: boolean): boolean {
+    if (selecionouPromocao) {
       return true;
     } else {
-      console.log("TROCOU PARA NÃO");
       return false;
     }
+  }
+
+  // Método chamado quando troca o valor da ComboBox Frete Ativo para saber se o Produto tem frete ou não
+  ativarFrete(ativouFrete: boolean): boolean {
+    if (ativouFrete) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  // De acordo com o valor da variável freteAtivo, habilita ou desabilita o ComboBox
+  // qu permite Ativar ou Destivar o Frete
+  habilitarCampoFrete() {
+    if (this.produtoAtualizar.tipo === 'tipoDigital') {
+      return true
+    } else {
+      return false
+    }
+  }
+
+  // Altera a a Label de visualização de medida de KB para MB e vice-versa
+  mudarLabelMedidaPeso() {
+    if (this.produtoAtualizar.tipo === 'tipoFisico')
+      this.medidaPeso = 'KG'
+    else
+      this.medidaPeso = 'MB'
+  }
+
+  // Método chamado para calcular o valor do frete
+  // Condição necessária para checar se o produto é Físico ou não, pois a regra do Frete só se aplica
+  // para produtos tipo = físico. Se tipoFísico = true, calcula o frete. Caso contrário, frete = 0
+  calcularFrete():number {
+    let valorFrete: number;
+    if (this.produtoAtualizar.tipo !== 'tipoFisico') {
+      valorFrete = 0
+    } else {
+      valorFrete = this.produtoAtualizar.frete = this.produtoAtualizar.peso * 10
+    }
+    return valorFrete
+  }
+
+  // Calcula os totalizadores de valor. Método chamado ao clicar no botão Calcular valores
+  // e antes de gravar o produto no banco de dados no onSubmit do formulário ngModel
+  calcularValores() {
+    let valorFrete: number;
+
+    // Desconto SIM e Frete SIM
+    if (this.produtoAtualizar.promocao && this.produtoAtualizar.freteAtivo) {
+      valorFrete = this.calcularFrete()
+      this.produtoAtualizar.valorTotalDesc = this.produtoAtualizar.valor - (this.produtoAtualizar.valor * 0.1)
+      this.produtoAtualizar.valorTotalFrete = this.produtoAtualizar.valorTotalDesc + valorFrete
+
+      this.produtoAtualizar.somaTotalValores = this.produtoAtualizar.valorTotalDesc + this.produtoAtualizar.frete
+    }
+
+    // Desconto SIM e Frete NÃO
+    if (this.produtoAtualizar.promocao && !this.produtoAtualizar.freteAtivo) {
+      this.produtoAtualizar.frete = 0
+      this.produtoAtualizar.valorTotalFrete = 0
+      this.produtoAtualizar.valorTotalDesc = this.produtoAtualizar.valor - (this.produtoAtualizar.valor * 0.1)
+
+      this.produtoAtualizar.somaTotalValores = this.produtoAtualizar.valorTotalDesc
+    }
+
+    // Desconto NÃO e Frete SIM
+    if (!this.produtoAtualizar.promocao && this.produtoAtualizar.freteAtivo) {
+      valorFrete = this.calcularFrete()
+      this.produtoAtualizar.valorTotalFrete = this.produtoAtualizar.valor + valorFrete
+      this.produtoAtualizar.valorTotalDesc = 0
+
+      this.produtoAtualizar.somaTotalValores = this.produtoAtualizar.valorTotalFrete
+    }
+
+    // Desconto NÃO e Frete NÃO
+    if (!this.produtoAtualizar.promocao && !this.produtoAtualizar.freteAtivo) {
+      this.produtoAtualizar.frete = 0
+      this.produtoAtualizar.valorTotalFrete = 0
+      this.produtoAtualizar.valorTotalDesc = 0
+
+      this.produtoAtualizar.somaTotalValores = this.produtoAtualizar.valor
+    }
+
   }
 
 }

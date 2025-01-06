@@ -57,7 +57,7 @@
       <tr>
         <td colspan="11" class="text-left">
           <b><label style="font-size: 16px;">* <u>Produto mais caro</u> - <label style="color: green; font-size: 20px">ID: {{ stringProdutoMaisCaro }}</label></label></b> |
-          <b><label style="font-size: 14px;">* Somando o valor unitário de todos os produtos cadastrados, sem frete e sem desconto, a <u>média de preço</u> é: <label style="color: green; font-size: 20px">{{ formatarValor(mediaPreco) }}</label></label></b>
+          <b><label style="font-size: 16px;">* <u>Média de preço</u>: <label style="color: green; font-size: 20px">{{ formatarValor(mediaPreco) }}</label></label></b>
         </td>
       </tr>
       <tr>
@@ -91,7 +91,7 @@
       <form (ngSubmit)="onSubmitSalvar(modal)" #produtoForm="ngForm" >
         <table class="table table-bordered">
           <tbody>
-          <!-- LINHA 1: Nome do Produto -->
+
           <tr>
             <td><label for="nome">Nome:</label></td>
             <td colspan="3">
@@ -105,7 +105,6 @@
             </td>
           </tr>
 
-          <!-- LINHA 2: Descrição do Produto -->
           <tr>
             <td><label for="descricao">Descrição:</label></td>
             <td colspan="3">
@@ -119,7 +118,6 @@
             </td>
           </tr>
 
-          <!-- LINHA 3: Tipo do Produto -->
           <tr>
             <td><label for="tipo">Tipo:</label></td>
             <td colspan="3">
@@ -127,14 +125,14 @@
                       class="form-control"
                       id="tipo"
                       name="tipoProduto"
-                      required #tipo="ngModel">
+                      required #tipo="ngModel"
+                      (ngModelChange)="mudarLabelMedidaPeso()">
                 <option value="tipoFisico">Físico</option>
                 <option value="tipoDigital">Digital</option>
               </select>
             </td>
           </tr>
 
-          <!-- LINHA 4: Quantidade do Produto -->
           <tr>
             <td><label for="quantidade">Quantidade:</label></td>
             <td colspan="3">
@@ -148,21 +146,23 @@
             </td>
           </tr>
 
-          <!-- LINHA 5: Frete do Produto -->
           <tr>
-            <td rowspan="2"><label>Frete:</label></td>
+            <td rowspan="2"><label>Valor do frete:</label></td>
             <td rowspan="2" colspan="1">
+              <!-- Div para exibir o valor formatado -->
+              <div class="mt-1">{{produtoAtualizar.frete | currency : 'BRL'}}</div>
+              <!-- INPUT EXISTE PARA O CAMPO DA ENTIDADE FAZER PARTE DO NGMODEL, MAS TEM DISPLAY = NONE -->
               <input type="number" [(ngModel)]="produtoAtualizar.frete"
                      class="form-control"
                      id="freteTrue"
                      name="freteProduto"
                      required #frete="ngModel"
                      maxlength="30"
-                     [disabled]="!produtoAtualizar.freteAtivo">
+                     [disabled]="!produtoAtualizar.freteAtivo"
+                     style="display: none;">
             </td>
           </tr>
 
-          <!-- LINHA 6: Peso -->
           <tr>
             <td><label for="peso">Peso:</label></td>
             <td colspan="1">
@@ -173,9 +173,11 @@
                      required #peso="ngModel"
                      maxlength="30">
             </td>
+            <td style="width: 50px;">
+            <label>{{ medidaPeso }}</label>
+            </td>
           </tr>
 
-          <!-- LINHA 7: Valor Unitário -->
           <tr>
             <td><label for="valor">Valor unitário:</label></td>
             <td>
@@ -191,7 +193,6 @@
             </td>
           </tr>
 
-          <!-- LINHA 8: Valor Total com Desconto -->
           <tr>
             <td><label for="valorTotalDesc">Valor total com desconto:</label></td>
             <td colspan="3">
@@ -205,7 +206,6 @@
               <div class="mt-1">{{produtoAtualizar.valorTotalDesc | currency : 'BRL'}}</div>
           </tr>
 
-          <!-- LINHA 10: Valor Total do Frete -->
           <tr>
             <td><label for="valorTotalFrete">Valor total com frete:</label></td>
             <td colspan="3">
@@ -220,7 +220,6 @@
             </td>
           </tr>
 
-          <!-- LINHA 11: Promoção -->
           <tr>
             <td><label for="promocao">Promoção:</label></td>
             <td>
@@ -228,26 +227,27 @@
                       class="form-control"
                       id="promocao"
                       name="promocaoProduto"
-                      required #promocao="ngModel">
-                <option value="true">Sim</option>
-                <option value="false">Não</option>
+                      required #promocao="ngModel"
+                      (ngModelChange)="selecionarPromocao($event)">
+                <option [ngValue]="true">Sim</option>
+                <option [ngValue]="false">Não</option>
               </select>
             </td>
-            <td><label for="freteAtivo">Frete ativo:</label></td>
+            <td><label for="freteAtivo">Frete:</label></td>
             <td>
               <select [(ngModel)]="produtoAtualizar.freteAtivo"
                       class="form-control"
                       id="freteAtivo"
                       name="freteAtivoProduto"
                       required #freteAtivo="ngModel"
-                      (ngModelChange)="ativarFrete($event)">
+                      (ngModelChange)="ativarFrete($event)"
+                      [disabled]="habilitarCampoFrete()">
                 <option [ngValue]="true">Sim</option>
                 <option [ngValue]="false">Não</option>
               </select>
             </td>
           </tr>
 
-          <!-- LINHA 12: Valor Total -->
           <tr>
             <td>
               <label for="somaTotalValores"><b>VALOR TOTAL: </b></label>
@@ -264,9 +264,11 @@
             </td>
           </tr>
 
-          <!-- LINHA 13: Botão de Cadastrar -->
           <tr>
-            <td colspan="6" class="text-left">
+            <td colspan="2">
+              <button type="button" class="btn btn-secondary" (click)="calcularValores()">Calcular valores</button>
+            </td>
+            <td colspan="4" class="text-left">
               <button type="submit" [disabled]="!produtoForm.form.valid" class="btn bg-primary-subtle fw-bold">Salvar</button>
             </td>
           </tr>

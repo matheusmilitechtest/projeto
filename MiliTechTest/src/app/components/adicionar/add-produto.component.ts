@@ -63,6 +63,7 @@ export class AddProdutoComponent {
     })
   }
 
+  // Altera a a Label de visualização de medida de KB para MB e vice-versa
   mudarLabelMedidaPeso() {
     if (this.produto.tipo === 'tipoFisico')
       this.medidaPeso = 'KG'
