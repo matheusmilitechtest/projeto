@@ -82,8 +82,9 @@ public class ProdutoServiceImpl implements ProdutoService {
 	}
 	
 	@Override
-	public double obterMediaPreco() {
-		return produtoRepository.obterMediaPreco();
+	public Double obterMediaPreco() {
+		Optional<Double> valor = Optional.ofNullable(produtoRepository.obterMediaPreco());
+		return valor.orElse(0.0);
 	}
 
 }

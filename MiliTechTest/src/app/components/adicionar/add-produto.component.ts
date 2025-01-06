@@ -50,11 +50,11 @@ export class AddProdutoComponent {
     private produtoService: ProdutoService) {
   }
 
-  // Método que é chamado ao clicar no botão Submit do formulário HTML (ngModel) ao criar um produto
+  // Função que é chamada ao clicar no botão Submit do formulário HTML (ngModel) ao criar um produto
   onSubmit() {
-    // Chama o método de calcular os totalizadores de valor antes de adicionar o produto no banco de dados
+    // Chama a função de calcular os totalizadores de valor antes de adicionar o produto no banco de dados
     this.calcularValores();
-    // Chama o método do service que adiciona o produto no banco de dados
+    // Chama a função do service que adiciona o produto no banco de dados
     this.produtoService.adicionarProduto(this.produto).subscribe({
       next: (produtoAdicionado: Produto) => {
         // Atribui o Produto retornado (produtoAdicionado) ao novoProduto
@@ -71,7 +71,7 @@ export class AddProdutoComponent {
       this.medidaPeso = 'MB'
   }
 
-  // Método chamado ao mudar de valor na ComboBox de Promoção no ngModel
+  // Função chamada ao mudar de valor na ComboBox de Promoção no ngModel
   selecionarPromocao(selecionouPromocao: boolean): boolean {
     if (selecionouPromocao) {
       return true;
@@ -80,7 +80,7 @@ export class AddProdutoComponent {
     }
   }
 
-  // Método chamado quando troca o valor da ComboBox Frete Ativo para saber se o Produto tem frete ou não
+  // Função chamada quando troca o valor da ComboBox Frete Ativo para saber se o Produto tem frete ou não
   ativarFrete(ativouFrete: boolean): boolean {
     if (ativouFrete) {
       return true;
@@ -89,7 +89,7 @@ export class AddProdutoComponent {
     }
   }
 
-  // Método que abre o modal de mensagem de sucesso após cadastrar um produto
+  // Função que abre o modal de mensagem de sucesso após cadastrar um produto
   msgAddProduto(modalMsg: any) {
     const modalRef = this.modalService.open(modalMsg);
     // Espera 0.3 segundos para setar o produto no modal por que ele chama no arquivo HTML o submit e o click
@@ -110,7 +110,7 @@ export class AddProdutoComponent {
     }
   }
 
-  // Método chamado para calcular o valor do frete
+  // Função chamada para calcular o valor do frete
   // Condição necessária para checar se o produto é Físico ou não, pois a regra do Frete só se aplica
   // para produtos tipo = físico. Se tipoFísico = true, calcula o frete. Caso contrário, frete = 0
   calcularFrete():number {
@@ -123,7 +123,7 @@ export class AddProdutoComponent {
     return valorFrete
   }
 
-  // Calcula os totalizadores de valor. Método chamado ao clicar no botão Calcular valores
+  // Calcula os totalizadores de valor. Função chamada ao clicar no botão Calcular valores
   // e antes de gravar o produto no banco de dados no onSubmit do formulário ngModel
   calcularValores() {
     let valorFrete: number;

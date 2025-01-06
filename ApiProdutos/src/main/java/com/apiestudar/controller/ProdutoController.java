@@ -70,8 +70,8 @@ public class ProdutoController {
 	}
 	
 	@GetMapping("/mediaPreco")
-	public double obterMediaPreco() {
-		double media = produtoService.obterMediaPreco();
+	public Double obterMediaPreco() {
+		Double media = produtoService.obterMediaPreco();
 		return media;
 	}
 

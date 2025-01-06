@@ -30,10 +30,11 @@ export class ProdutoListComponent implements OnInit {
   // Variável pra exibir o resultado da query que vem da API sobre média de preços
   mediaPreco: number = 0;
 
-  // Variáveis para: armazenar a lista de produtos para listagem na tela, armazenar o produto a ser atualizado
-  // no modal de edição e o produto a ser exclúido para abrir o modal de mensagem
+  // Variáveis para: armazenar a lista de produtos para listagem na tela
   listaDeProdutos!: Produto[];
+  // Armazenar o produto a ser atualizado no modal de edição
   produtoAtualizar!: Produto;
+  // Armazena o produto que aparece no modal de mensagem de exclusão
   produtoExcluido!: Produto;
 
   // Variável somente para visualização. Exibe KG na tela para produto tipoFisico e MB para tipoDigital
@@ -45,9 +46,9 @@ export class ProdutoListComponent implements OnInit {
 
   // Ao abrir a página, chama os endpoints abaixo...
   ngOnInit() {
-    // Chama o método de listar o produto mais caro
+    // Chama o Função de listar o produto mais caro
     this.listarProdutoMaisCaro();
-    // Chama o método de calcular a média dos valores unitários
+    // Chama o Função de calcular a média dos valores unitários
     this.calcularMedia();
     // Lista todos os produtos na tela
     this.produtoService.listarProdutos().subscribe(data => {
@@ -56,35 +57,43 @@ export class ProdutoListComponent implements OnInit {
     });
   }
 
-  // Método chamado ao clicar no botão de Submit (Salvar) do formulário de Edição de produtos
+  // função chamada ao clicar no botão de Submit (Salvar) do formulário de Edição de produtos
   onSubmitSalvar(modal: any) {
-    // Chama o método de calcular os totalizadores de valor antes de salvar o produto no banco de dados
+    // Chama o Função de calcular os totalizadores de valor antes de salvar o produto no banco de dados
     this.calcularValores();
     // Salva o produto no banco de dados, fecha o modal e atualiza a lista
     this.produtoService.atualizarProduto(this.produtoAtualizar.id, this.produtoAtualizar).subscribe();
-    modal.close();
+    // Calcula novamente os valores para atualizar a lista de produtos
+    this.calcularValores()
     this.atualizarLista();
+    modal.close();
   }
 
-  // Método que calcula a média dos valores unitários
+  // Função que calcula a média dos valores unitários
   calcularMedia() {
     this.produtoService.calcularMedia().subscribe((media: number) => {
-      this.mediaPreco = media; // Atribui o valor da média à variável mediaPreco
+        this.mediaPreco = media;
     });
   }
 
-  // * ATENÇÃO: O ENDPOINT de produto mais caro retorna uma lista porque pode haver produtos com
-  // "Valores Totais" iguais. E também, retornar uma lista pode permitir ser implementado
-  // um ranking de valores mais caros, e não a exibição de somente o primeiro valor.
+  // * O endpoint de valor mais caro retorna uma lista para facilitar uma implementação
+  // de ranking de valores mais caros, e não a exibição de somente o primeiro valor.
 
-  // Metodo que busca o produto com Valor Total mais caro
+  // Função que busca o produto com Valor Total mais caro
   listarProdutoMaisCaro() {
   this.produtoService.listarProdutoMaisCaro().subscribe((produtos: Produto[]) => {
     this.listaProdutoMaisCaro = produtos;
-    this.stringProdutoMaisCaro = '' + this.listaProdutoMaisCaro[0].id + ' - ' +  this.listaProdutoMaisCaro[0].nome
+
+    // Checa se existe registro na lista para preencher a string e exibir na tela
+    // Se não existir, preenche com vazio.
+    if (this.listaProdutoMaisCaro[0] != null) {
+      this.stringProdutoMaisCaro = '' + this.listaProdutoMaisCaro[0].id + ' - ' + this.listaProdutoMaisCaro[0].nome
+    } else {
+      this.stringProdutoMaisCaro = '';
+    }
   })}
 
-  // Método para deletar um produto através do id. Chama o endpoint, e tendo sucesso na exclusão
+  // Função para deletar um produto através do id. Chama o endpoint, e tendo sucesso na exclusão
   // (retornando true do endpoint, abre o o modal de mensagem de produto excluido com sucesso)
   deletarProduto(modalDeletar: any, id: number, produto: Produto) {
     this.produtoService.deletarProduto(id).subscribe({
@@ -97,12 +106,12 @@ export class ProdutoListComponent implements OnInit {
     })
   }
 
-  // Método para atualizar um produto através do id
+  // Função para atualizar um produto através do id
   atualizarProduto(modalEditar: any, id: number, produto: Produto) {
     this.produtoService.atualizarProduto(id, produto).subscribe({
       next: (produtoRetornado: Produto) => {
         // Atribui o Produto retornado (produtoRetornado) pelo id fornecido
-        // ao produto que será atualizado e abre a tela de edição
+        // ao produto que será atualizado e abre a tela de edição, passando o produto para editar
         this.produtoAtualizar = produtoRetornado
         this.calcularValores();
         this.mudarLabelMedidaPeso();
@@ -111,7 +120,7 @@ export class ProdutoListComponent implements OnInit {
     })
   }
 
-  // Método que formata o valor para R$ para ser exibido na tabela
+  // Função que formata o valor para R$ para ser exibido na tabela
   formatarValor(valor: number): string {
     return valor.toLocaleString('pt-BR', {
       style: 'currency',
@@ -119,15 +128,15 @@ export class ProdutoListComponent implements OnInit {
     });
   }
 
-  // Método que atualiza a lista de produtos
+  // Função que atualiza a lista de produtos
   atualizarLista(): void {
     // Lista todos os produtos na tela
     this.produtoService.listarProdutos().subscribe(data => {
       // Lista e ordena os produtos por ID, em ordem crescente (de 'a' para 'b', de '0' a '10', por exemplo)
       this.listaDeProdutos = data.sort((a, b) => a.id - b.id);
-      this.listarProdutoMaisCaro();
-      this.calcularMedia();
     });
+    this.listarProdutoMaisCaro();
+    this.calcularMedia();
   }
 
   // Função que abre o modal - Janela de edição de produto
@@ -143,7 +152,12 @@ export class ProdutoListComponent implements OnInit {
     this.calcularMedia();
   }
 
-  // Método chamado ao mudar de valor na ComboBox de Promoção no ngModel
+  // Função que abre o modal - Janel de Aviso para Atualizar List de Produtos
+  abrirTelaAviso(modalAviso: any) {
+    this.modalService.open(modalAviso);
+  }
+
+  // função chamada ao mudar de valor na ComboBox de Promoção no ngModel
   selecionarPromocao(selecionouPromocao: boolean): boolean {
     if (selecionouPromocao) {
       return true;
@@ -152,7 +166,7 @@ export class ProdutoListComponent implements OnInit {
     }
   }
 
-  // Método chamado quando troca o valor da ComboBox Frete Ativo para saber se o Produto tem frete ou não
+  // função chamada quando troca o valor da ComboBox Frete Ativo para saber se o Produto tem frete ou não
   ativarFrete(ativouFrete: boolean): boolean {
     if (ativouFrete) {
       return true;
@@ -179,7 +193,7 @@ export class ProdutoListComponent implements OnInit {
       this.medidaPeso = 'MB'
   }
 
-  // Método chamado para calcular o valor do frete
+  // função chamada para calcular o valor do frete
   // Condição necessária para checar se o produto é Físico ou não, pois a regra do Frete só se aplica
   // para produtos tipo = físico. Se tipoFísico = true, calcula o frete. Caso contrário, frete = 0
   calcularFrete():number {
@@ -192,7 +206,7 @@ export class ProdutoListComponent implements OnInit {
     return valorFrete
   }
 
-  // Calcula os totalizadores de valor. Método chamado ao clicar no botão Calcular valores
+  // Calcula os totalizadores de valor. função chamada ao clicar no botão Calcular valores
   // e antes de gravar o produto no banco de dados no onSubmit do formulário ngModel
   calcularValores() {
     let valorFrete: number;

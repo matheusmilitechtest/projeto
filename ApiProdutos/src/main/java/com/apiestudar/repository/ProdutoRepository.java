@@ -15,6 +15,6 @@ public interface ProdutoRepository extends JpaRepository<Produto, Long> {
 	List<Produto> listarProdutoMaisCaro();
 	
 	@Query(value = "SELECT AVG(valor) AS media_valor FROM produto;", nativeQuery = true)
-	double obterMediaPreco();
+	Double obterMediaPreco();
 
 }

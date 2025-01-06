@@ -19,5 +19,5 @@ public interface ProdutoService {
 	
 	List<Produto> listarProdutoMaisCaro();
 
-	double obterMediaPreco();
+	Double obterMediaPreco();
 }
