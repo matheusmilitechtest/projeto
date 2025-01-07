@@ -11,8 +11,6 @@ public interface ProdutoService {
 
 	List<Produto> listarProdutos();
 
-	Optional<Produto> buscarProduto(long id);
-
 	Produto atualizarProduto(long id, Produto produtoAtualizado);
 
 	boolean deletarProduto(long id);

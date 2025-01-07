@@ -25,18 +25,6 @@ public class ProdutoController {
 		return produtos;
 	}
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	@GetMapping("/buscarProduto/{id}")
-	public Optional<Produto> buscarProduto(@PathVariable long id) {
-		Optional<Produto> produto = produtoService.buscarProduto(id);
-		// Produto não foi encontrado pelo id
-		if (produto == null)
-			return null;
-		// Produto foi encontrado pelo id
-		else
-			return produto;
-	}
-
 	@PostMapping("/adicionarProduto")
 	public Produto adicionarProduto(@RequestBody Produto produto) {
 		Produto produtoAdicionado = (Produto) produtoService.adicionarProduto(produto);
@@ -57,8 +45,7 @@ public class ProdutoController {
 	@DeleteMapping("/deletarProduto/{id}")
 	public boolean deletarProduto(@PathVariable int id) {
 		boolean estaDeletado = produtoService.deletarProduto(id);
-		// Se encontrar o produto pelo id, deleta e retorna TRUE mas se
-		// não encontrar retorna FALSE
+		// Se encontrar o produto pelo id, o retorno é TRUE
 		return estaDeletado;
 	}
 	

@@ -1,5 +1,7 @@
 package com.apiestudar.service;
 
+import com.apiestudar.exceptions.RetornouFalseException;
+import com.apiestudar.exceptions.RetornouNuloException;
 import com.apiestudar.model.Produto;
 import com.apiestudar.repository.ProdutoRepository;
 
@@ -26,24 +28,12 @@ public class ProdutoServiceImpl implements ProdutoService {
 	}
 
 	@Override
-	public Optional<Produto> buscarProduto(long id) {
-		// Pega o produto pelo id
-		Optional<Produto> produto = produtoRepository.findById(id);
-		// Se o produto não existir, retorna nulo
-		if (produto.isPresent() == false)
-			return null;
-		// Se o produto existir,retorna o produto
-		else
-			return produto;
-	}
-
-	@Override
 	public Produto atualizarProduto(long id, Produto produtoAtualizado) {
 		// Chama o método e busca o produto pelo id no repositório
-		Optional<Produto> produto = buscarProduto(id);
-		// Se não encontrou o produto, retorna nulo.
-		if (produto == null)
-			return null;
+		Optional<Produto> produto = produtoRepository.findById(id);
+		// Se não encontrou o produto...
+		if (produto.isPresent() == false)
+			throw new RetornouNuloException("Registro não encontrado no banco de dados. Retorno = NULL.");
 		// Se encontrou o produto ele seta os novos atributos, salva e retorna pro
 		// controller.
 		else {
@@ -66,14 +56,13 @@ public class ProdutoServiceImpl implements ProdutoService {
 
 	@Override
 	public boolean deletarProduto(long id) {
-		// Procura o produto pelo id, se encontrar e for != nulo ele deleta e retorna
-		// "true" para o
-		// status "estaDeletado", caso contrário ele retorna false
-		if (buscarProduto(id) != null) {
+		// Procura o produto pelo id, se encontrar e for != false ele deleta e retorna
+		// "true" para o controller
+		if (produtoRepository.findById(id).isPresent() == true) {
 			produtoRepository.deleteById(id);
 			return true;
 		} else
-			return false;
+			throw new RetornouFalseException("Registro não encontrado no banco de dados. Retorno = FALSE.");
 	}
 
 	@Override
