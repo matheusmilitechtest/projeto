@@ -57,15 +57,12 @@ export class ProdutoListComponent implements OnInit {
     });
   }
 
-  // função chamada ao clicar no botão de Submit (Salvar) do formulário de Edição de produtos
+  // Função chamada ao clicar no botão de Submit (Salvar) do formulário de Edição de produtos
   onSubmitSalvar(modal: any) {
     // Chama o Função de calcular os totalizadores de valor antes de salvar o produto no banco de dados
     this.calcularValores();
-    // Salva o produto no banco de dados, fecha o modal e atualiza a lista
+    // Salva o produto no banco de dados e fecha o modal
     this.produtoService.atualizarProduto(this.produtoAtualizar.id, this.produtoAtualizar).subscribe();
-    // Calcula novamente os valores para atualizar a lista de produtos
-    this.calcularValores()
-    this.atualizarLista();
     modal.close();
   }
 
@@ -77,7 +74,7 @@ export class ProdutoListComponent implements OnInit {
   }
 
   // * O endpoint de valor mais caro retorna uma lista para facilitar uma implementação
-  // de ranking de valores mais caros, e não a exibição de somente o primeiro valor.
+  // de ranking de valores mais caros, caso necessário
 
   // Função que busca o produto com Valor Total mais caro
   listarProdutoMaisCaro() {
@@ -147,9 +144,9 @@ export class ProdutoListComponent implements OnInit {
   // Função que abre o modal - Janela de exclusão de produto
   abrirTelaExclusao(modalExcluir: any) {
     this.modalService.open(modalExcluir);
-    this.atualizarLista();
     this.listarProdutoMaisCaro();
     this.calcularMedia();
+    this.atualizarLista();
   }
 
   // Função que abre o modal - Janel de Aviso para Atualizar List de Produtos
