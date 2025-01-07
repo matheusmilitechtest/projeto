@@ -1,6 +1,7 @@
 # **Projeto MILI - *TECH* TEST**
 
 - **Instruções sobre este projeto, destinado ao Teste Técnico do Processo Seletivo da Mili.**
+- **VÍDEO DE DEMONSTRAÇÃO: https://bit.ly/4g3nM8x**
 
 
 
